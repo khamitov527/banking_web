@@ -35,7 +35,7 @@ export default function BankActivity({ transactions = [], transfers = [] }) {
           <span className="col x15">Date</span>
         </div>
         {transfers.map((transfer) => (
-          <div className="table-row" key={transfer.id}>
+          <Link className="table-row" key={transfer.id} to="/">
             <span className="col x4">
               <Arrow amount={transfer.amount} />
               {transfer.memo}
@@ -43,7 +43,7 @@ export default function BankActivity({ transactions = [], transfers = [] }) {
             <span className="col x2">{transfer.recipientEmail}</span>
             <span className="col x2">{formatAmount(transfer.amount)}</span>
             <span className="col x15">{formatDate(transfer.postedAt)}</span>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

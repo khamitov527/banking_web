@@ -3,7 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import axios from "axios"
 import Navbar from "../Navbar/Navbar"
 import Home from "../Home/Home"
+import TransactionDetail from "../TransactionDetail/TransactionDetail"
 import "./App.css"
+
 
 export default function App() {
   const [isFetching, setIsFetching] = useState(false)
@@ -12,9 +14,13 @@ export default function App() {
   const [transactions, setTransactions] = useState([])
   const [transfers, setTransfers] = useState([])
 
+  const handleOnInputChange = (event) => {
+    setFilterInputValue(event.target.value)
+  }
+
   useEffect(() => {
-    setIsFetching(true)
     const fetchData = async () => {
+      setIsFetching(true)
       try {
         const transactionsData = await axios.get("http://localhost:3001/bank/transactions")
         if (transactionsData?.data?.transactions) {
@@ -34,14 +40,27 @@ export default function App() {
     fetchData()
   }, [])
 
+  const addTransaction = (newTransaction) => {
+    setTransactions((transactions) => [...transactions, newTransaction])
+  }
+
   return (
     <div className="App">
       <BrowserRouter>
-        <Navbar />
+        <Navbar filterInputValue={filterInputValue} handleOnInputChange={handleOnInputChange}/>
         <Routes>
-          <Route path="/" element={ <Home /> }/>
+          <Route path="/" element={ 
+            <Home 
+              transfers={transfers}
+              transactions={transactions}
+              isLoading={isFetching}
+              error={error}
+              filterInputValue={filterInputValue}
+              addTransaction={addTransaction}
+            /> 
+          }/>
           <Route 
-            path="/transactions/:transactionId" element={ <TransactionDetail /> }/>
+            path="/bank/transactions/:transactionId" element={ <TransactionDetail /> }/>
         </Routes>
       </BrowserRouter>
     </div>
